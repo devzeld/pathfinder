@@ -20,4 +20,5 @@ function drawBoard() {
     }
   }
 }
+
 drawBoard();

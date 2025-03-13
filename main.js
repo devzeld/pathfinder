@@ -1,17 +1,53 @@
-window.addEventListener("DOMContentLoaded", (event) => {
-  let canvas = document.getElementById("env");
-  let context = canvas.getContext("2d");
-  let bw = 1000;
-  let bh = 1000;
+function createGrid(rows, cols, size) {
+  const svg = document.querySelector("#grid");
 
-  function drawBoard() {
-    context.lineWidth = 1;
-    for (let x = 0; x < bw; x += 10) {
-      for (let y = 0; y < bh; y += 10) {
-        context.strokeRect(x, y, 30, 30);
-      }
+  svg.innnerHTML = "";
+
+  svg.setAttribute("width", cols * size);
+  svg.setAttribute("height", rows * size);
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+      );
+
+      rect.setAttribute("x", col * size);
+      rect.setAttribute("y", row * size);
+      rect.setAttribute("width", size);
+      rect.setAttribute("height", size);
+      rect.setAttribute("fill", "none");
+      rect.setAttribute("stroke", "grey");
+      rect.setAttribute("stroke-width", 0.6);
+
+      rect.setAttribute("id", `cell-${row}-${col}`);
+
+      rect.addEventListener("click", (event) => {
+        setSelected(svg, row, col);
+        console.log(`row: ${row}, col: ${col}`);
+      });
+
+      svg.appendChild(rect);
     }
   }
+}
 
-  drawBoard();
+function setSelected(svg, row, col) {
+  svg.getElementById(`cell-${row}-${col}`).setAttribute("fill", "lightblue");
+
+  const allCells = document.querySelectorAll("rect");
+  allCells.forEach((cell) => {
+    if (cell.getAttribute("id") == `cell-${row}-${col}`) {
+      cell.setAttribute("fill", "none");
+    }
+  });
+}
+
+window.addEventListener("DOMContentLoaded", (event) => {
+  createGrid(
+    document.body.scrollHeight / 30,
+    document.body.scrollWidth / 30,
+    30
+  );
 });
